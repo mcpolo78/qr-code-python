@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Raccourcisseur d'URL{% endblock %}</title>
+    <title>{% block title %}Générateur de QR Code{% endblock %}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,12 +30,13 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="url"], input[type="text"] {
+        input[type="url"], input[type="text"], textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+            resize: vertical;
         }
         button {
             background-color: #007bff;

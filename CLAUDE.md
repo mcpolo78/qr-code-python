@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a simple Flask backend API designed for local development and Heroku deployment. The application uses environment variable management and follows a basic REST API structure.
+This is a URL shortener web application with QR code generation built with Flask. The application creates short codes for long URLs, stores them in SQLite, and generates QR codes for easy sharing. Designed for local development and Heroku deployment.
 
 ## Development Commands
 
@@ -15,28 +15,46 @@ This is a simple Flask backend API designed for local development and Heroku dep
 
 ### Heroku Deployment
 - **Deploy to Heroku**: `git push heroku master`
-- **Create Heroku app**: `heroku create [app-name]`
+- **View Heroku logs**: `heroku logs --tail`
+- **Heroku app info**: `heroku info`
 
 ## Architecture
 
 ### Application Structure
-- `app.py` - Main Flask application with REST API endpoints
-- Environment variables loaded via `python-dotenv` from `.env` file
-- Configuration managed through `os.getenv()` with fallback defaults
+- `app.py` - Main Flask application with URL shortening logic
+- `templates/` - Jinja2 HTML templates for web interface
+  - `base.html` - Base template with CSS styling
+  - `index.html` - Home page with URL input form  
+  - `result.html` - Results page showing shortened URL and QR code
+- SQLite database (`urls.db`) for persistent URL storage
+- Environment variables loaded via `python-dotenv`
+
+### Core Functionality
+The application uses a database-first approach where each function ensures table existence:
+- `get_db_connection()` - Creates connection and ensures table schema exists
+- `generate_short_code()` - Creates unique 6-character codes using `secrets.token_urlsafe()`
+- `save_url()` / `get_original_url()` - Database operations for URL mapping
 
 ### API Endpoints
-- `GET /` - Health check/welcome message
-- `GET /api/health` - Service health status
-- `GET /api/users` - Retrieve user list (sample data)
-- `POST /api/users` - Create new user (expects JSON with name/email)
+- `GET /` - Home page with URL shortening form
+- `POST /shorten` - Create shortened URL (form data: `url`)
+- `GET /<short_code>` - Redirect to original URL (302 redirect)
+- `GET /qr/<short_code>` - Generate QR code image (PNG format)
+
+### Database Schema
+SQLite table `urls`:
+- `id` - Primary key
+- `short_code` - Unique 6-character identifier
+- `original_url` - Original long URL
+- `created_at` - Timestamp
 
 ### Environment Configuration
 - `FLASK_DEBUG` - Controls debug mode (True/False)
 - `PORT` - Server port (default: 5000)
 - `SECRET_KEY` - Flask secret key for sessions
-- `DATABASE_URL` - Database connection (prepared for future use)
 
 ### Deployment
-- Heroku deployment configured via `Procfile` using gunicorn
-- Production server runs: `gunicorn app:app`
-- Environment variables automatically loaded in both local and production environments
+- Heroku deployment via `Procfile` using gunicorn
+- Database auto-initialization on first request (Heroku-compatible)
+- SQLite database excluded from git (ephemeral on Heroku)
+- Production server: `gunicorn app:app`

@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}URL Raccourcie - Raccourcisseur d'URL{% endblock %}
+{% block title %}QR Code Généré - Générateur de QR Code{% endblock %}
 
 {% block content %}
-<h1>URL Raccourcie avec succès !</h1>
+<h1>QR Code généré avec succès !</h1>
 
 <div class="result">
-    <h3>URL originale :</h3>
-    <div class="url-display">{{ original_url }}</div>
-    
-    <h3>URL raccourcie :</h3>
-    <div class="url-display">
-        <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
-    </div>
+    <h3>Texte encodé :</h3>
+    <div class="url-display">{{ text }}</div>
     
     <div class="qr-code">
         <h3>QR Code :</h3>
-        <img src="/qr/{{ short_code }}" alt="QR Code pour {{ short_url }}" style="max-width: 200px;">
-        <p><small>Scannez ce QR code pour accéder directement à l'URL raccourcie</small></p>
+        <form method="POST" action="/qr" target="_blank">
+            <input type="hidden" name="text" value="{{ text }}">
+            <button type="submit" style="background: none; border: none; cursor: pointer;">
+                <div style="width: 300px; height: 300px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                    Cliquez pour générer le QR Code
+                </div>
+            </button>
+        </form>
+        <p><small>Cliquez sur l'image ci-dessus pour générer et télécharger le QR code</small></p>
     </div>
 </div>
 
-<p><a href="/">Raccourcir une autre URL</a></p>
+<p><a href="/">Générer un autre QR Code</a></p>
 {% endblock %}
