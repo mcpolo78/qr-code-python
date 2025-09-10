@@ -29,11 +29,26 @@ def init_db():
     conn.commit()
     conn.close()
 
+def get_db_connection():
+    """Obtient une connexion à la base de données et s'assure que la table existe"""
+    conn = sqlite3.connect('urls.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS urls (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            short_code TEXT UNIQUE NOT NULL,
+            original_url TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    return conn
+
 def generate_short_code():
     """Génère un code court unique"""
     while True:
         code = secrets.token_urlsafe(6)
-        conn = sqlite3.connect('urls.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('SELECT id FROM urls WHERE short_code = ?', (code,))
         if not cursor.fetchone():
@@ -43,7 +58,7 @@ def generate_short_code():
 
 def save_url(short_code, original_url):
     """Sauvegarde l'URL dans la base de données"""
-    conn = sqlite3.connect('urls.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('INSERT INTO urls (short_code, original_url) VALUES (?, ?)', 
                    (short_code, original_url))
@@ -52,7 +67,7 @@ def save_url(short_code, original_url):
 
 def get_original_url(short_code):
     """Récupère l'URL originale depuis la base de données"""
-    conn = sqlite3.connect('urls.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT original_url FROM urls WHERE short_code = ?', (short_code,))
     result = cursor.fetchone()
