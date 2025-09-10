@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}URL Raccourcie - Raccourcisseur d'URL{% endblock %}
+
+{% block content %}
+<h1>URL Raccourcie avec succès !</h1>
+
+<div class="result">
+    <h3>URL originale :</h3>
+    <div class="url-display">{{ original_url }}</div>
+    
+    <h3>URL raccourcie :</h3>
+    <div class="url-display">
+        <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+    </div>
+    
+    <div class="qr-code">
+        <h3>QR Code :</h3>
+        <img src="/qr/{{ short_code }}" alt="QR Code pour {{ short_url }}" style="max-width: 200px;">
+        <p><small>Scannez ce QR code pour accéder directement à l'URL raccourcie</small></p>
+    </div>
+</div>
+
+<p><a href="/">Raccourcir une autre URL</a></p>
+{% endblock %}
