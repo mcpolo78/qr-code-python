@@ -1,27 +1,74 @@
 {% extends "base.html" %}
 
-{% block title %}QR Code Généré - Générateur de QR Code{% endblock %}
+{% block title %}QR Code Généré avec Succès{% endblock %}
 
 {% block content %}
-<h1>QR Code généré avec succès !</h1>
+<div style="text-align: center; margin-bottom: 16px;">
+    <div style="width: 48px; height: 48px; background: var(--success); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; animation: checkmark 0.6s ease-out;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <h1 style="color: var(--success); margin-bottom: 4px; font-size: 24px;">QR Code généré !</h1>
+</div>
 
-<div class="result">
-    <h3>Texte encodé :</h3>
-    <div class="url-display">{{ text }}</div>
+<div class="result" style="padding: 20px; margin-top: 16px;">
+    <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Contenu encodé</h3>
+        <div class="url-display" style="padding: 12px; font-size: 13px;">{{ text }}</div>
+    </div>
     
     <div class="qr-code">
-        <h3>QR Code :</h3>
-        <form method="POST" action="/qr" target="_blank">
-            <input type="hidden" name="text" value="{{ text }}">
-            <button type="submit" style="background: none; border: none; cursor: pointer;">
-                <div style="width: 300px; height: 300px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-                    Cliquez pour générer le QR Code
+        <div style="display: flex; justify-content: center; margin: 16px 0;">
+            <div style="position: relative; display: inline-block;">
+                <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code généré" style="border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); background: white; padding: 16px; max-width: 200px; width: 100%; height: auto;">
+                <div style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
-            </button>
-        </form>
-        <p><small>Cliquez sur l'image ci-dessus pour générer et télécharger le QR code</small></p>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+            <form method="POST" action="/qr" target="_blank" style="display: inline;">
+                <input type="hidden" name="text" value="{{ text }}">
+                <button type="submit" style="display: inline-flex; align-items: center; padding: 12px 20px; font-size: 14px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                        <path d="M21 15V19A2 2 0 0119 21H5A2 2 0 013 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Télécharger
+                </button>
+            </form>
+            
+            <a href="/" style="display: inline-flex; align-items: center; text-decoration: none;">
+                <button type="button" class="button-secondary" style="display: inline-flex; align-items: center; padding: 12px 20px; font-size: 14px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                        <path d="M12 5V19M5 12L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Nouveau
+                </button>
+            </a>
+        </div>
     </div>
 </div>
 
-<p><a href="/">Générer un autre QR Code</a></p>
+<style>
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+</style>
 {% endblock %}

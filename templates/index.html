@@ -1,17 +1,65 @@
 {% extends "base.html" %}
 
+{% block title %}Générateur QR Code - Simple et Élégant{% endblock %}
+
 {% block content %}
-<h1>Générateur de QR Code</h1>
+<div style="text-align: center; margin-bottom: 20px;">
+    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #007AFF, #5AC8FA); border-radius: 16px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="13" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="3" y="13" width="8" height="8" rx="1" fill="white"/>
+            <rect x="5" y="5" width="4" height="4" fill="#007AFF"/>
+            <rect x="15" y="5" width="4" height="4" fill="#007AFF"/>
+            <rect x="5" y="15" width="4" height="4" fill="#007AFF"/>
+            <rect x="13" y="13" width="2" height="2" fill="white"/>
+            <rect x="16" y="13" width="2" height="2" fill="white"/>
+            <rect x="19" y="13" width="2" height="2" fill="white"/>
+            <rect x="13" y="16" width="2" height="2" fill="white"/>
+            <rect x="16" y="16" width="2" height="2" fill="white"/>
+            <rect x="19" y="16" width="2" height="2" fill="white"/>
+            <rect x="13" y="19" width="2" height="2" fill="white"/>
+            <rect x="16" y="19" width="2" height="2" fill="white"/>
+            <rect x="19" y="19" width="2" height="2" fill="white"/>
+        </svg>
+    </div>
+    <h1>Générateur QR Code</h1>
+    <p style="color: var(--text-secondary); font-size: 16px; margin-top: 4px;">Transformez votre contenu en QR code</p>
+</div>
 
 <form method="POST" action="/generate">
     <div class="form-group">
-        <label for="text">Entrez votre texte ou URL :</label>
-        <textarea id="text" name="text" placeholder="Texte, URL, numéro de téléphone, etc." rows="4" required></textarea>
+        <label for="text">Contenu à encoder</label>
+        <textarea 
+            id="text" 
+            name="text" 
+            placeholder="URL, texte, email, téléphone..." 
+            required
+        ></textarea>
     </div>
-    <button type="submit">Générer le QR Code</button>
+    <button type="submit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px; vertical-align: middle;">
+            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor"/>
+        </svg>
+        Générer
+    </button>
 </form>
 
+<div style="margin-top: 24px; padding: 16px; background: var(--surface-secondary); border-radius: var(--radius); border: 1px solid var(--border);">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 13px; color: var(--text-secondary); text-align: center;">
+        <div>🔗 URLs</div>
+        <div>📧 Email</div>
+        <div>📱 Téléphone</div>
+    </div>
+</div>
+
 {% if error %}
-<div class="error">{{ error }}</div>
+<div class="error">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px; vertical-align: middle;">
+        <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.1"/>
+        <path d="M15 9L9 15M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    {{ error }}
+</div>
 {% endif %}
 {% endblock %}

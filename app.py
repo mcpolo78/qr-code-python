@@ -20,7 +20,22 @@ def generate_qr_code():
     if not text:
         return render_template('index.html', error='Text is required')
     
-    return render_template('result.html', text=text)
+    # Créer le QR code
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(text)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convertir l'image en base64 pour l'affichage direct
+    img_buffer = BytesIO()
+    img.save(img_buffer, format='PNG')
+    img_buffer.seek(0)
+    
+    import base64
+    img_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+    
+    return render_template('result.html', text=text, qr_image=img_base64)
 
 @app.route('/qr', methods=['POST'])
 def generate_qr():
