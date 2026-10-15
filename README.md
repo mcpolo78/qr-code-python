@@ -62,3 +62,7 @@ This application is configured for deployment on platforms like Heroku with the 
 ## License
 
 This project is open source and available under the MIT License.
+
+## Version statique (Vercel)
+
+Le dossier `public/` contient une version 100 % navigateur du générateur (JavaScript, bibliothèque [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), licence MIT) : aucun serveur, aucune donnée envoyée. Elle se déploie telle quelle sur Vercel grâce à `vercel.json`. La version Flask reste disponible pour un usage local (`python app.py`).

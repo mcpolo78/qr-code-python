@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur QR Code - Simple et Élégant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #007AFF;
+            --primary-blue-hover: #0056CC;
+            --background: #F2F2F7;
+            --surface: #FFFFFF;
+            --surface-secondary: #F8F8FA;
+            --text-primary: #1C1C1E;
+            --text-secondary: #8E8E93;
+            --border: #D1D1D6;
+            --success: #34C759;
+            --error: #FF3B30;
+            --shadow: rgba(0, 0, 0, 0.04);
+            --shadow-hover: rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --radius-large: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--surface);
+            border-radius: var(--radius-large);
+            box-shadow: 0 8px 32px var(--shadow);
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        textarea, input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--surface);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        textarea:focus, input[type="text"]:focus, input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        button {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+        }
+
+        button:hover {
+            background: var(--primary-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+        }
+
+        .button-secondary {
+            background: var(--surface-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .button-secondary:hover {
+            background: var(--surface);
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 16px var(--shadow-hover);
+        }
+
+        .error {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--error);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-top: 16px;
+            font-weight: 500;
+            border-left: 4px solid var(--error);
+        }
+
+        .result {
+            background: var(--surface-secondary);
+            border-radius: var(--radius-large);
+            padding: 32px;
+            margin-top: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .result h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .qr-code img {
+            border-radius: var(--radius);
+            box-shadow: 0 8px 24px var(--shadow);
+            background: white;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .url-display {
+            word-break: break-all;
+            background: var(--surface);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 16px 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 32px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-blue-hover);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px 20px;
+                margin: 12px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            textarea {
+                min-height: 80px;
+                padding: 12px 14px;
+            }
+
+            button {
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+            
+            .form-group {
+                margin-bottom: 16px;
+            }
+            
+            textarea {
+                min-height: 80px;
+            }
+        }
+
+        /* Animation pour l'apparition */
+        .container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 20px;">
+    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #007AFF, #5AC8FA); border-radius: 16px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="13" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="3" y="13" width="8" height="8" rx="1" fill="white"/>
+            <rect x="5" y="5" width="4" height="4" fill="#007AFF"/>
+            <rect x="15" y="5" width="4" height="4" fill="#007AFF"/>
+            <rect x="5" y="15" width="4" height="4" fill="#007AFF"/>
+            <rect x="13" y="13" width="2" height="2" fill="white"/>
+            <rect x="16" y="13" width="2" height="2" fill="white"/>
+            <rect x="19" y="13" width="2" height="2" fill="white"/>
+            <rect x="13" y="16" width="2" height="2" fill="white"/>
+            <rect x="16" y="16" width="2" height="2" fill="white"/>
+            <rect x="19" y="16" width="2" height="2" fill="white"/>
+            <rect x="13" y="19" width="2" height="2" fill="white"/>
+            <rect x="16" y="19" width="2" height="2" fill="white"/>
+            <rect x="19" y="19" width="2" height="2" fill="white"/>
+        </svg>
+    </div>
+        <h1 style="text-align:center">Générateur QR Code</h1>
+        <p style="text-align:center; color: var(--text-secondary); font-size: 16px; margin: 4px 0 20px;">Transformez votre contenu en QR code. Tout se passe dans votre navigateur : rien n'est envoyé à un serveur.</p>
+        <form id="form">
+            <div class="form-group">
+                <label for="text">Contenu à encoder</label>
+                <textarea id="text" name="text" placeholder="URL, texte, email, téléphone..." required></textarea>
+            </div>
+            <button type="submit">Générer</button>
+        </form>
+
+        <div id="error" class="error" role="alert" hidden>Veuillez saisir un contenu.</div>
+
+        <div id="result" class="result" style="padding: 20px; margin-top: 16px;" hidden>
+            <div style="display: flex; justify-content: center; margin: 16px 0;">
+                <canvas id="qr" width="256" height="256" role="img" aria-label="QR code généré" style="border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.1); background: white; padding: 16px; max-width: 100%; height: auto;"></canvas>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" id="download" style="padding: 12px 20px; font-size: 14px;">Télécharger (PNG)</button>
+                <button type="button" id="reset" class="button-secondary" style="padding: 12px 20px; font-size: 14px;">Nouveau</button>
+            </div>
+        </div>
+    </div>
+    <script src="qrcode.js"></script>
+    <script>
+        const $ = (id) => document.getElementById(id);
+        const SIZE = 256;
+        qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+
+        function draw(text) {
+            const qr = qrcode(0, 'M');
+            qr.addData(text, 'Byte');
+            qr.make();
+            const count = qr.getModuleCount();
+            const cell = Math.floor(SIZE / (count + 2));
+            const size = cell * (count + 2);
+            const canvas = $('qr');
+            canvas.width = canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#000';
+            for (let r = 0; r < count; r++)
+                for (let c = 0; c < count; c++)
+                    if (qr.isDark(r, c)) ctx.fillRect((c + 1) * cell, (r + 1) * cell, cell, cell);
+        }
+
+        $('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = $('text').value.trim();
+            $('error').hidden = !!text;
+            $('result').hidden = !text;
+            if (!text) return;
+            try {
+                draw(text);
+            } catch {
+                $('error').textContent = 'Contenu trop long pour un QR code.';
+                $('error').hidden = false;
+                $('result').hidden = true;
+            }
+        });
+
+        $('download').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.download = 'qrcode.png';
+            a.href = $('qr').toDataURL('image/png');
+            a.click();
+        });
+
+        $('reset').addEventListener('click', () => {
+            $('text').value = '';
+            $('result').hidden = true;
+            $('text').focus();
+        });
+    </script>
+</body>
+</html>
